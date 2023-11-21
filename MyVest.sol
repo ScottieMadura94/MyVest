@@ -53,4 +53,13 @@ function release() public onlyBeneficiary {
 
         emit TokensReleased(vested);
     }
+function calculateVestedAmount() public view returns (uint256) {
+        if (block.timestamp < cliff) {
+            return 0;
+        } else if (block.timestamp >= start + duration || revoked) {
+            return token.balanceOf(address(this));
+        } else {
+            return (token.balanceOf(address(this)) * (block.timestamp - start)) / duration;
+        }
+    }
 }
