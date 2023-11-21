@@ -75,4 +75,13 @@ function revoke() public onlyBeneficiary {
 
         emit VestingRevoked();
     }
+
+function remainingBalance() public view returns (uint256) {
+        return token.balanceOf(address(this));
+    }
+
+    function getVestingDetails() public view returns (uint256, uint256, uint256, bool, bool) {
+        return (cliff, start, duration, revocable, revoked);
+    }
+
 }
