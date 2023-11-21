@@ -40,5 +40,17 @@ contract TokenVesting {
         revocable = _revocable;
         token = IERC20(_token);
     }
+function release() public onlyBeneficiary {
+        require(!revoked, "Vesting is revoked");
+        require(block.timestamp >= cliff, "Vesting cliff not reached");
+        require(released == 0, "Tokens have already been released");
 
+        uint256 vested = calculateVestedAmount();
+        require(vested > 0, "No tokens are vested");
+
+        released = vested;
+        require(token.transfer(beneficiary, vested), "Token transfer failed");
+
+        emit TokensReleased(vested);
+    }
 }
