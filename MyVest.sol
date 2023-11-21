@@ -62,4 +62,17 @@ function calculateVestedAmount() public view returns (uint256) {
             return (token.balanceOf(address(this)) * (block.timestamp - start)) / duration;
         }
     }
+
+function revoke() public onlyBeneficiary {
+        require(revocable, "Vesting is not revocable");
+        require(!revoked, "Vesting already revoked");
+
+        uint256 vested = calculateVestedAmount();
+        require(vested > 0, "No tokens are vested");
+
+        revoked = true;
+        require(token.transfer(beneficiary, vested), "Token transfer failed");
+
+        emit VestingRevoked();
+    }
 }
